@@ -1,0 +1,284 @@
+{
+  "status": "PASS",
+  "summary": {
+    "total": 27,
+    "passed": 27,
+    "failed": 0,
+    "unresolved": 0,
+    "buggy_failures": 8
+  },
+  "results": [
+    {
+      "scenario": "empty",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unicode-send",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "ordinary-tombstone",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unedited-forward-tombstone",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "live-edited-forward",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "edited-forward-tombstone",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "source-edited-before-forward",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "reactions-preserved-in-tombstone",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "multi-hop-forward",
+      "version": "1",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "empty",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unicode-send",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "ordinary-tombstone",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unedited-forward-tombstone",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "live-edited-forward",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "edited-forward-tombstone",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "source-edited-before-forward",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "reactions-preserved-in-tombstone",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "multi-hop-forward",
+      "version": "2",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay-two"
+    },
+    {
+      "scenario": "empty",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unicode-send",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "ordinary-tombstone",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "unedited-forward-tombstone",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "live-edited-forward",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "PASS",
+      "buggy_signature": null
+    },
+    {
+      "scenario": "edited-forward-tombstone",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "source-edited-before-forward",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "reactions-preserved-in-tombstone",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay"
+    },
+    {
+      "scenario": "multi-hop-forward",
+      "version": "3",
+      "status": "PASS",
+      "signature": null,
+      "findings": [],
+      "error": null,
+      "buggy_status": "FAIL",
+      "buggy_signature": "FIELD_SENDER:relay-two"
+    }
+  ],
+  "parser": "fixed",
+  "scope": "held-out synthetic reference-app cases; not proof for arbitrary applications or traces"
+}

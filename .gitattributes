@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.sqlite binary
+# Preserve the exact bytes covered by the sample evidence manifest.
+examples/sample-case/** -text

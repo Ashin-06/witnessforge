@@ -1,0 +1,770 @@
+{
+  "case_id": "20261010T054705Z-863e79faf4",
+  "created_at": "2026-10-10T05:47:05.375615+00:00",
+  "tool_version": "1.0.0",
+  "scope": "Synthetic SQLite reference messaging app; not real Android acquisition.",
+  "config": {
+    "version": "2",
+    "parser": "buggy",
+    "parser_source_sha256": null,
+    "repeats": 2,
+    "max_evaluations": 200
+  },
+  "result": {
+    "status": "FAIL",
+    "original_trace": [
+      {
+        "id": "a01",
+        "op": "send",
+        "message_id": "chat-01",
+        "sender": "Ravi",
+        "recipient": "Maya",
+        "text": "Meeting at ten"
+      },
+      {
+        "id": "a02",
+        "op": "react",
+        "message_id": "chat-01",
+        "sender": "Maya",
+        "text": "thumbs-up"
+      },
+      {
+        "id": "a03",
+        "op": "send",
+        "message_id": "source-42",
+        "sender": "Noor",
+        "recipient": "Maya",
+        "text": "Draft budget"
+      },
+      {
+        "id": "a04",
+        "op": "send",
+        "message_id": "chat-02",
+        "sender": "Maya",
+        "recipient": "Ravi",
+        "text": "Confirmed"
+      },
+      {
+        "id": "a05",
+        "op": "edit",
+        "message_id": "chat-01",
+        "text": "Meeting at eleven"
+      },
+      {
+        "id": "a06",
+        "op": "forward",
+        "message_id": "forwarded-42",
+        "source_id": "source-42",
+        "sender": "Maya",
+        "recipient": "Ishan"
+      },
+      {
+        "id": "a07",
+        "op": "send",
+        "message_id": "chat-03",
+        "sender": "Ishan",
+        "recipient": "Maya",
+        "text": "Thanks"
+      },
+      {
+        "id": "a08",
+        "op": "react",
+        "message_id": "forwarded-42",
+        "sender": "Ishan",
+        "text": "eyes"
+      },
+      {
+        "id": "a09",
+        "op": "edit",
+        "message_id": "chat-02",
+        "text": "Confirmed for eleven"
+      },
+      {
+        "id": "a10",
+        "op": "edit",
+        "message_id": "forwarded-42",
+        "text": "Approved budget"
+      },
+      {
+        "id": "a11",
+        "op": "forward",
+        "message_id": "chat-04",
+        "source_id": "chat-01",
+        "sender": "Maya",
+        "recipient": "Noor"
+      },
+      {
+        "id": "a12",
+        "op": "send",
+        "message_id": "chat-05",
+        "sender": "Noor",
+        "recipient": "Ravi",
+        "text": "Lunch?"
+      },
+      {
+        "id": "a13",
+        "op": "delete",
+        "message_id": "chat-03"
+      },
+      {
+        "id": "a14",
+        "op": "react",
+        "message_id": "chat-05",
+        "sender": "Ravi",
+        "text": "yes"
+      },
+      {
+        "id": "a15",
+        "op": "delete",
+        "message_id": "forwarded-42"
+      },
+      {
+        "id": "a16",
+        "op": "send",
+        "message_id": "chat-06",
+        "sender": "Ravi",
+        "recipient": "Noor",
+        "text": "At noon"
+      },
+      {
+        "id": "a17",
+        "op": "edit",
+        "message_id": "chat-06",
+        "text": "At twelve thirty"
+      },
+      {
+        "id": "a18",
+        "op": "react",
+        "message_id": "chat-04",
+        "sender": "Noor",
+        "text": "ok"
+      },
+      {
+        "id": "a19",
+        "op": "delete",
+        "message_id": "chat-02"
+      },
+      {
+        "id": "a20",
+        "op": "send",
+        "message_id": "chat-07",
+        "sender": "Maya",
+        "recipient": "Noor",
+        "text": "See you"
+      }
+    ],
+    "minimized_trace": [
+      {
+        "id": "a03",
+        "op": "send",
+        "message_id": "source-42",
+        "sender": "Noor",
+        "recipient": "Maya",
+        "text": "Draft budget"
+      },
+      {
+        "id": "a06",
+        "op": "forward",
+        "message_id": "forwarded-42",
+        "source_id": "source-42",
+        "sender": "Maya",
+        "recipient": "Ishan"
+      },
+      {
+        "id": "a10",
+        "op": "edit",
+        "message_id": "forwarded-42",
+        "text": "Approved budget"
+      },
+      {
+        "id": "a15",
+        "op": "delete",
+        "message_id": "forwarded-42"
+      }
+    ],
+    "signature": "FIELD_SENDER:forwarded-42",
+    "original_count": 20,
+    "minimized_count": 4,
+    "evaluations": 64,
+    "repeats": 2,
+    "max_evaluations": 200,
+    "one_minimal": true,
+    "budget_exhausted": false,
+    "history": [
+      {
+        "phase": "baseline",
+        "count": 20,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 2
+      },
+      {
+        "phase": "partition",
+        "count": 5,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 4,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 10,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 6,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 7,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 8,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 13,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 10,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 14,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 12,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 15,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 14,
+        "accepted": true
+      },
+      {
+        "phase": "partition",
+        "count": 4,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 16,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 8,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 18,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 10,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 20,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 6,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 22,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 8,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 24,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 11,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 26,
+        "accepted": true
+      },
+      {
+        "phase": "partition",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 28,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 6,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 30,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 7,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 32,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 9,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 34,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 7,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 36,
+        "accepted": true
+      },
+      {
+        "phase": "partition",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 38,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 6,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 40,
+        "accepted": true
+      },
+      {
+        "phase": "partition",
+        "count": 2,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 42,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 44,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 5,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 46,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 4,
+        "status": "FAIL",
+        "signature": "FIELD_SENDER:forwarded-42",
+        "evaluations": 48,
+        "accepted": true
+      },
+      {
+        "phase": "partition",
+        "count": 0,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 50,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 1,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 52,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 54,
+        "accepted": false
+      },
+      {
+        "phase": "partition",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 56,
+        "accepted": false
+      },
+      {
+        "phase": "single-action verification",
+        "count": 0,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 58,
+        "accepted": false
+      },
+      {
+        "phase": "single-action verification",
+        "count": 1,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 60,
+        "accepted": false
+      },
+      {
+        "phase": "single-action verification",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 62,
+        "accepted": false
+      },
+      {
+        "phase": "single-action verification",
+        "count": 3,
+        "status": "PASS",
+        "signature": null,
+        "evaluations": 64,
+        "accepted": false
+      }
+    ],
+    "initial_inspection": {
+      "status": "FAIL",
+      "signature": "FIELD_SENDER:forwarded-42",
+      "findings": [
+        {
+          "code": "FIELD_SENDER",
+          "message_id": "forwarded-42",
+          "expected": "Maya",
+          "actual": "Noor"
+        }
+      ],
+      "expected": [
+        {
+          "message_id": "chat-01",
+          "sender": "Ravi",
+          "recipient": "Maya",
+          "text": "Meeting at eleven",
+          "source_id": null,
+          "edited": true,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Maya",
+              "text": "thumbs-up"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-02",
+          "sender": "Maya",
+          "recipient": "Ravi",
+          "text": null,
+          "source_id": null,
+          "edited": true,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-03",
+          "sender": "Ishan",
+          "recipient": "Maya",
+          "text": null,
+          "source_id": null,
+          "edited": false,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-04",
+          "sender": "Maya",
+          "recipient": "Noor",
+          "text": "Meeting at eleven",
+          "source_id": "chat-01",
+          "edited": false,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Noor",
+              "text": "ok"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-05",
+          "sender": "Noor",
+          "recipient": "Ravi",
+          "text": "Lunch?",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Ravi",
+              "text": "yes"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-06",
+          "sender": "Ravi",
+          "recipient": "Noor",
+          "text": "At twelve thirty",
+          "source_id": null,
+          "edited": true,
+          "deleted": false,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-07",
+          "sender": "Maya",
+          "recipient": "Noor",
+          "text": "See you",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        },
+        {
+          "message_id": "forwarded-42",
+          "sender": "Maya",
+          "recipient": "Ishan",
+          "text": null,
+          "source_id": "source-42",
+          "edited": true,
+          "deleted": true,
+          "reactions": [
+            {
+              "sender": "Ishan",
+              "text": "eyes"
+            }
+          ]
+        },
+        {
+          "message_id": "source-42",
+          "sender": "Noor",
+          "recipient": "Maya",
+          "text": "Draft budget",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        }
+      ],
+      "actual": [
+        {
+          "message_id": "chat-01",
+          "sender": "Ravi",
+          "recipient": "Maya",
+          "text": "Meeting at eleven",
+          "source_id": null,
+          "edited": true,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Maya",
+              "text": "thumbs-up"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-02",
+          "sender": "Maya",
+          "recipient": "Ravi",
+          "text": null,
+          "source_id": null,
+          "edited": true,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-03",
+          "sender": "Ishan",
+          "recipient": "Maya",
+          "text": null,
+          "source_id": null,
+          "edited": false,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-04",
+          "sender": "Maya",
+          "recipient": "Noor",
+          "text": "Meeting at eleven",
+          "source_id": "chat-01",
+          "edited": false,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Noor",
+              "text": "ok"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-05",
+          "sender": "Noor",
+          "recipient": "Ravi",
+          "text": "Lunch?",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": [
+            {
+              "sender": "Ravi",
+              "text": "yes"
+            }
+          ]
+        },
+        {
+          "message_id": "chat-06",
+          "sender": "Ravi",
+          "recipient": "Noor",
+          "text": "At twelve thirty",
+          "source_id": null,
+          "edited": true,
+          "deleted": false,
+          "reactions": []
+        },
+        {
+          "message_id": "chat-07",
+          "sender": "Maya",
+          "recipient": "Noor",
+          "text": "See you",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        },
+        {
+          "message_id": "forwarded-42",
+          "sender": "Noor",
+          "recipient": "Ishan",
+          "text": null,
+          "source_id": "source-42",
+          "edited": true,
+          "deleted": true,
+          "reactions": [
+            {
+              "sender": "Ishan",
+              "text": "eyes"
+            }
+          ]
+        },
+        {
+          "message_id": "source-42",
+          "sender": "Noor",
+          "recipient": "Maya",
+          "text": "Draft budget",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        }
+      ],
+      "executed_actions": 20,
+      "version": "2",
+      "parser": "buggy",
+      "scope": "synthetic SQLite reference app",
+      "database_path": null
+    },
+    "final_inspection": {
+      "status": "FAIL",
+      "signature": "FIELD_SENDER:forwarded-42",
+      "findings": [
+        {
+          "code": "FIELD_SENDER",
+          "message_id": "forwarded-42",
+          "expected": "Maya",
+          "actual": "Noor"
+        }
+      ],
+      "expected": [
+        {
+          "message_id": "forwarded-42",
+          "sender": "Maya",
+          "recipient": "Ishan",
+          "text": null,
+          "source_id": "source-42",
+          "edited": true,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "source-42",
+          "sender": "Noor",
+          "recipient": "Maya",
+          "text": "Draft budget",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        }
+      ],
+      "actual": [
+        {
+          "message_id": "forwarded-42",
+          "sender": "Noor",
+          "recipient": "Ishan",
+          "text": null,
+          "source_id": "source-42",
+          "edited": true,
+          "deleted": true,
+          "reactions": []
+        },
+        {
+          "message_id": "source-42",
+          "sender": "Noor",
+          "recipient": "Maya",
+          "text": "Draft budget",
+          "source_id": null,
+          "edited": false,
+          "deleted": false,
+          "reactions": []
+        }
+      ],
+      "executed_actions": 4,
+      "version": "2",
+      "parser": "buggy",
+      "scope": "synthetic SQLite reference app",
+      "database_path": null
+    },
+    "minimality_scope": "single-action removal plus dependent-action closure; not globally shortest",
+    "scope": "synthetic SQLite reference app",
+    "witness_checks": [
+      {
+        "witness": "original",
+        "matches_repeated_oracle": true
+      },
+      {
+        "witness": "minimized",
+        "matches_repeated_oracle": true
+      }
+    ]
+  },
+  "artifacts": {
+    "report": "/api/cases/20261010T054705Z-863e79faf4/report",
+    "json": "/api/cases/20261010T054705Z-863e79faf4/json",
+    "bundle": "/api/cases/20261010T054705Z-863e79faf4/bundle"
+  }
+}

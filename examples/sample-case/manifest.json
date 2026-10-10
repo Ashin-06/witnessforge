@@ -1,0 +1,17 @@
+{
+  "algorithm": "sha256",
+  "tool_version": "1.0.0",
+  "case_id": "20261010T054705Z-863e79faf4",
+  "files": {
+    "case.json": "694d0712c786f93e0ecdbf7b5db64df3af5897b8a040277da058236080ecf796",
+    "evidence/minimized/evidence-v2.sqlite": "42996b06a75f149b8aed9bf98466cc46934f83419bb2eb068ce79386fcd7a541",
+    "evidence/minimized/inspection.json": "1ff0107ec206e0630f7ff8da968fd1c3c4a7f3d7c0f806777940a61119c29432",
+    "evidence/minimized/trace.json": "cde8bca1064df06558087f86e2df0c455cbe46ff88d6461e97cce9f544816ce8",
+    "evidence/original/evidence-v2.sqlite": "e9cc19f9eb114e294c00a18cbaea062aab9dde62ef3cf0d6606380b8ab36d347",
+    "evidence/original/inspection.json": "c39624f526e5f52c39a75e74f7f15828aad062cb689163c2fd6d01fa8097bca1",
+    "evidence/original/trace.json": "aed152cd11f06287dc258300bec8e1403635e868b38836831a576d3ec3cfe59b",
+    "minimized-trace.json": "cde8bca1064df06558087f86e2df0c455cbe46ff88d6461e97cce9f544816ce8",
+    "original-trace.json": "aed152cd11f06287dc258300bec8e1403635e868b38836831a576d3ec3cfe59b",
+    "report.html": "957a84831cb63c650a931401f915538fa3237f89b4f247961f021e93e27364ea"
+  }
+}

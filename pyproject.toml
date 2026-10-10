@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "witnessforge"
+version = "1.0.0"
+description = "Dependency-aware forensic parser failure reduction and repair validation lab"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+witnessforge = "witnessforge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["witnessforge*"]
+
+[tool.setuptools.package-data]
+witnessforge = ["static/*"]

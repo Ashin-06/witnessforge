@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A local forensic parser lab for reproducing and reducing semantic errors in a synthetic SQLite reference messaging app.">
+  <title>WitnessForge | Forensic Parser Lab</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to workspace</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="WitnessForge home"><span class="brand-mark" aria-hidden="true">W<span>F</span></span><span>Witness<span class="brand-light">Forge</span><small>FORENSIC PARSER LAB</small></span></a>
+    <div class="header-meta"><span class="connection" id="connection"><span class="status-dot"></span><span id="connection-text">Connecting to local lab</span></span><span class="local-label">LOCAL WORKSPACE</span></div>
+  </header>
+
+  <main id="main-content" class="shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div><div class="eyebrow">REPRODUCE · REDUCE · VERIFY</div><h1 id="page-title">Find the smallest useful witness.</h1><p class="intro-copy">Turn a long messaging scenario into a focused, reproducible example of a forensic parser error.</p></div>
+      <div class="scope-tag"><span class="scope-symbol" aria-hidden="true">◇</span><div><strong>Reference app laboratory</strong><span>Synthetic SQLite data · no real Android validation</span></div></div>
+    </section>
+
+    <div class="workspace-nav" role="tablist" aria-label="Lab views">
+      <button class="nav-tab active" id="tab-experiment" type="button" role="tab" aria-selected="true" aria-controls="view-experiment" tabindex="0" data-view="experiment"><span class="tab-number">01</span> Experiment</button>
+      <button class="nav-tab" id="tab-repair" type="button" role="tab" aria-selected="false" aria-controls="view-repair" tabindex="-1" data-view="repair"><span class="tab-number">02</span> Repair validation</button>
+      <button class="nav-tab" id="tab-cases" type="button" role="tab" aria-selected="false" aria-controls="view-cases" tabindex="-1" data-view="cases"><span class="tab-number">03</span> Case archive <span class="tab-count" id="case-count">—</span></button>
+    </div>
+
+    <div id="global-status" class="notice" role="status" aria-live="polite" hidden></div>
+    <div id="error-banner" class="notice notice-error" role="alert" hidden></div>
+
+    <section id="view-experiment" class="view" role="tabpanel" aria-labelledby="tab-experiment">
+      <div class="experiment-grid">
+        <aside class="config-column" aria-label="Experiment configuration">
+          <form id="experiment-form" class="panel config-panel">
+            <div class="panel-heading"><div><div class="eyebrow">SCENARIO INPUT</div><h2>Build your experiment</h2></div><span class="tiny-chip" id="trace-count">0 actions</span></div>
+            <p class="muted small">Replay known actions, compare the expected meaning with parser output, then remove actions that do not cause the error.</p>
+            <div class="field-grid">
+              <label for="version">Reference app version<select id="version" name="version" disabled><option>Loading…</option></select></label>
+              <label for="parser">Parser<select id="parser" name="parser" disabled><option>Loading…</option></select></label>
+              <label for="repeats">Repeat each check<input type="number" id="repeats" name="repeats" value="2" min="1" max="5" required><span class="field-hint">Check reproducibility</span></label>
+              <label for="max-evaluations">Evaluation budget<input type="number" id="max-evaluations" name="max_evaluations" value="200" min="2" max="1000" required><span class="field-hint">Maximum reduction checks</span></label>
+            </div>
+            <div class="editor-label"><label for="trace-input">Action trace <span class="muted">JSON</span></label><button id="format-json" class="text-button" type="button">Format</button></div>
+            <textarea id="trace-input" class="code-editor" rows="17" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="trace-help trace-error" placeholder="Loading the bundled demonstration…"></textarea>
+            <p id="trace-help" class="field-hint">An array of action objects. Import a JSON array or an object containing <code>trace</code>. Maximum file size: 1 MiB.</p>
+            <p id="trace-error" class="inline-error" hidden></p>
+            <div class="editor-actions"><button id="import-json" class="button button-secondary button-small" type="button"><span aria-hidden="true">↑</span> Import JSON</button><input type="file" id="trace-file" accept=".json,application/json" class="visually-hidden" tabindex="-1"><button id="reset-demo" class="text-button" type="button" disabled>Reset to demo</button></div>
+            <button id="run-button" class="button button-primary run-button" type="submit" disabled><span class="run-icon" aria-hidden="true">▶</span><span id="run-label">Run &amp; reduce</span><span class="button-trailing" aria-hidden="true">↗</span></button>
+            <p class="run-footnote">Experiments use the bundled reference app. A passing test applies only to the tested scenario.</p>
+          </form>
+          <div class="method-note"><span class="note-icon" aria-hidden="true">i</span><div><strong>What “1-minimal” means</strong><p>No removable action, together with its dependent actions, can be dropped while preserving the same tested failure. It does not prove a globally shortest scenario.</p></div></div>
+        </aside>
+
+        <div class="results-column" id="results-column" aria-busy="false">
+          <section class="panel empty-state" id="empty-state" aria-labelledby="empty-title">
+            <div class="empty-graphic" aria-hidden="true"><span></span><span></span><span class="highlight"></span><span></span><span></span><div class="graphic-bracket"></div></div>
+            <div class="eyebrow">FROM A SCENARIO TO A WITNESS</div><h2 id="empty-title">Make the error reproducible.</h2><p>The demo is ready to run. The lab will compare expected and parsed evidence, then search for a smaller action sequence that preserves the same error.</p>
+            <ol class="workflow"><li><span>1</span><div><strong>Replay</strong><small>Create reference data from the action trace.</small></div></li><li><span>2</span><div><strong>Compare</strong><small>Check meaning against independent expectations.</small></div></li><li><span>3</span><div><strong>Reduce</strong><small>Keep the actions needed to reproduce the mismatch.</small></div></li></ol>
+          </section>
+
+          <div id="run-results" hidden>
+            <section class="result-banner" id="result-banner" aria-labelledby="result-title"><span class="result-symbol" id="result-symbol" aria-hidden="true">!</span><div><div class="eyebrow" id="result-eyebrow">EXPERIMENT RESULT</div><h2 id="result-title">Result</h2><p id="result-description"></p></div><span class="result-badge" id="result-badge"></span></section>
+            <div class="metrics" aria-label="Reduction metrics">
+              <div class="metric"><span>Original trace</span><strong id="metric-original">—</strong><small>actions</small></div>
+              <div class="metric"><span>Reduced witness</span><strong class="teal-text" id="metric-minimized">—</strong><small id="metric-minimized-note">actions</small></div>
+              <div class="metric"><span>Reduction checks</span><strong id="metric-evaluations">—</strong><small id="metric-evaluations-note">evaluations</small></div>
+              <div class="metric"><span>Minimality</span><strong class="metric-word" id="metric-minimality">—</strong><small id="metric-minimality-note">within tested scope</small></div>
+            </div>
+            <section class="panel evidence-panel" aria-labelledby="evidence-heading"><div class="panel-heading"><div><div class="eyebrow">SEMANTIC COMPARISON</div><h2 id="evidence-heading">The evidence mismatch</h2></div><span class="tiny-chip" id="signature-label">Signature</span></div><p class="muted small" id="evidence-description">Expected meaning and the forensic parser’s interpretation.</p><div id="findings"></div><details class="raw-details"><summary>Inspect full replay evidence</summary><div class="raw-pair"><div><h3>Initial inspection</h3><pre id="initial-inspection"></pre></div><div><h3>Final inspection</h3><pre id="final-inspection"></pre></div></div></details></section>
+            <section class="panel trace-panel" aria-labelledby="trace-heading"><div class="panel-heading"><div><div class="eyebrow">ACTION SEQUENCE</div><h2 id="trace-heading">What remains necessary</h2></div><span class="tiny-chip" id="reduction-label"></span></div><div class="trace-comparison"><div><h3 class="trace-heading">Original scenario <span id="original-trace-count"></span></h3><ol id="original-trace" class="action-list"></ol></div><div><h3 class="trace-heading"><span class="teal-dot" aria-hidden="true"></span> Reduced witness <span id="minimized-trace-count"></span></h3><ol id="minimized-trace" class="action-list"></ol></div></div></section>
+            <section class="panel history-panel" aria-labelledby="history-heading"><div class="panel-heading"><div><div class="eyebrow">REDUCTION AUDIT TRAIL</div><h2 id="history-heading">Every candidate, accounted for</h2></div><span class="tiny-chip" id="history-count">0 checks</span></div><div class="table-scroll"><table><caption class="visually-hidden">Reduction history</caption><thead><tr><th scope="col">Check</th><th scope="col">Actions</th><th scope="col">Outcome</th><th scope="col">Decision / detail</th></tr></thead><tbody id="history-body"></tbody></table></div></section>
+            <section class="panel export-panel" aria-label="Save experiment evidence"><div><h2>Keep the complete evidence package.</h2><p class="muted small" id="case-meta">A reproducible record of this experiment.</p></div><div class="export-actions" id="export-actions"></div></section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-repair" class="view" role="tabpanel" aria-labelledby="tab-repair" hidden>
+      <div class="section-intro"><div><div class="eyebrow">TEST THE PATCH</div><h2>Repair validation</h2><p>Evaluate the bundled repaired parser against the lab’s validation suite. A passing suite is evidence for its tested scope, not universal correctness.</p></div><button id="validate-repair" class="button button-primary" type="button"><span aria-hidden="true">✓</span> Run validation suite</button></div>
+      <div class="scope-notice"><strong>Bundled repair, explicit scope.</strong> This checks the supplied fixed parser on synthetic reference-app data. It does not generate an AI repair or validate a real Android forensic tool.</div>
+      <section class="panel repair-empty" id="repair-empty"><div class="empty-symbol" aria-hidden="true">✓</div><h3>Check the repair beyond one example.</h3><p>Run the suite to see the outcome and individual validation cases.</p></section>
+      <div id="repair-results" hidden><section class="result-banner" id="repair-banner"><span class="result-symbol" id="repair-symbol" aria-hidden="true">✓</span><div><div class="eyebrow">VALIDATION RESULT</div><h2 id="repair-title"></h2><p id="repair-description"></p></div><span class="result-badge" id="repair-badge"></span></section><section class="panel"><div class="panel-heading"><h2>Validation cases</h2><span class="tiny-chip" id="repair-count"></span></div><div id="repair-case-list" class="validation-list"></div><details class="raw-details"><summary>View complete validation response</summary><pre id="repair-json"></pre></details></section></div>
+    </section>
+
+    <section id="view-cases" class="view" role="tabpanel" aria-labelledby="tab-cases" hidden>
+      <div class="section-intro"><div><div class="eyebrow">LOCAL EXPERIMENT RECORDS</div><h2>Case archive</h2><p>Reopen previous experiments and download their evidence packages.</p></div><button class="button button-secondary" id="refresh-cases" type="button"><span aria-hidden="true">↻</span> Refresh archive</button></div>
+      <section class="panel"><div id="cases-empty" class="archive-empty"><span aria-hidden="true">▤</span><h3>No saved experiments yet.</h3><p>Run a scenario to create your first local case.</p></div><div class="table-scroll" id="cases-table-wrap" hidden><table class="cases-table"><caption class="visually-hidden">Saved forensic parser experiments</caption><thead><tr><th scope="col">Case</th><th scope="col">Created</th><th scope="col">Status</th><th scope="col">Actions</th><th scope="col">Open</th></tr></thead><tbody id="cases-body"></tbody></table></div></section>
+    </section>
+    <footer class="footer"><span><span class="footer-dot" aria-hidden="true"></span> WitnessForge <span class="footer-divider">/</span> Local reference laboratory</span><span>Reproducible evidence. Bounded claims.</span></footer>
+  </main>
+</body>
+</html>

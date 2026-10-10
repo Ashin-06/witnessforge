@@ -1,0 +1,424 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WitnessForge evidence report</title><style>
+body{font:16px/1.6 system-ui,sans-serif;background:#f3f5f7;color:#172332;margin:0;padding:32px}main{max-width:1050px;margin:auto;background:white;padding:36px;border:1px solid #dae1e8;border-radius:16px}h1{font-size:32px;line-height:1.2}h2{margin-top:34px}small{color:#526277}code,pre{font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #dce3e9}th{background:#edf3f6}.notice{padding:18px;background:#fff3d9;border-left:4px solid #c28a19}.metrics{display:flex;gap:24px;flex-wrap:wrap}.metric{padding:12px;background:#edf5f5;min-width:120px}.metric b{display:block;font-size:28px}a{color:#096b70}@media print{body{padding:0;background:white}main{border:0;padding:8px}tr{break-inside:avoid}}
+</style><main><small>WITNESSFORGE / LOCAL RESEARCH LAB</small><h1>Forensic parser failure report</h1>
+<p>Case <code>20261010T054705Z-863e79faf4</code><br>Created 2026-10-10T05:47:05.375615+00:00</p>
+<div class="notice"><b>Scope:</b> Generated SQLite reference-app evidence using synthetic test data. This report does not validate a real Android app, establish legal admissibility, or certify all parser behavior.</div>
+<h2>Experiment result: FAIL</h2><p>The same failure was reproduced in a dependency-aware 1-minimal trace. This does not establish the globally shortest trace.</p>
+<div class="metrics"><div class="metric">Original actions<b>20</b></div><div class="metric">Retained actions<b>4</b></div><div class="metric">Evaluations<b>64</b></div></div>
+<p>Failure identity: <code>FIELD_SENDER:forwarded-42</code></p>
+<h2>Configuration</h2><pre>{
+  &quot;version&quot;: &quot;2&quot;,
+  &quot;parser&quot;: &quot;buggy&quot;,
+  &quot;parser_source_sha256&quot;: null,
+  &quot;repeats&quot;: 2,
+  &quot;max_evaluations&quot;: 200
+}</pre>
+<h2>Evidence differences</h2><pre>[
+  {
+    &quot;code&quot;: &quot;FIELD_SENDER&quot;,
+    &quot;message_id&quot;: &quot;forwarded-42&quot;,
+    &quot;expected&quot;: &quot;Maya&quot;,
+    &quot;actual&quot;: &quot;Noor&quot;
+  }
+]</pre>
+<h2>Reduced reproduction</h2><table><thead><tr><th>Action</th><th>Operation</th><th>Values</th></tr></thead><tbody><tr><td>a03</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;source-42&quot;,
+  &quot;sender&quot;: &quot;Noor&quot;,
+  &quot;recipient&quot;: &quot;Maya&quot;,
+  &quot;text&quot;: &quot;Draft budget&quot;
+}</pre></td></tr><tr><td>a06</td><td>forward</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;,
+  &quot;source_id&quot;: &quot;source-42&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;recipient&quot;: &quot;Ishan&quot;
+}</pre></td></tr><tr><td>a10</td><td>edit</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;,
+  &quot;text&quot;: &quot;Approved budget&quot;
+}</pre></td></tr><tr><td>a15</td><td>delete</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;
+}</pre></td></tr></tbody></table>
+<h2>Original action history</h2><table><thead><tr><th>Action</th><th>Operation</th><th>Values</th></tr></thead><tbody><tr><td>a01</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-01&quot;,
+  &quot;sender&quot;: &quot;Ravi&quot;,
+  &quot;recipient&quot;: &quot;Maya&quot;,
+  &quot;text&quot;: &quot;Meeting at ten&quot;
+}</pre></td></tr><tr><td>a02</td><td>react</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-01&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;text&quot;: &quot;thumbs-up&quot;
+}</pre></td></tr><tr><td>a03</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;source-42&quot;,
+  &quot;sender&quot;: &quot;Noor&quot;,
+  &quot;recipient&quot;: &quot;Maya&quot;,
+  &quot;text&quot;: &quot;Draft budget&quot;
+}</pre></td></tr><tr><td>a04</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-02&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;recipient&quot;: &quot;Ravi&quot;,
+  &quot;text&quot;: &quot;Confirmed&quot;
+}</pre></td></tr><tr><td>a05</td><td>edit</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-01&quot;,
+  &quot;text&quot;: &quot;Meeting at eleven&quot;
+}</pre></td></tr><tr><td>a06</td><td>forward</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;,
+  &quot;source_id&quot;: &quot;source-42&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;recipient&quot;: &quot;Ishan&quot;
+}</pre></td></tr><tr><td>a07</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-03&quot;,
+  &quot;sender&quot;: &quot;Ishan&quot;,
+  &quot;recipient&quot;: &quot;Maya&quot;,
+  &quot;text&quot;: &quot;Thanks&quot;
+}</pre></td></tr><tr><td>a08</td><td>react</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;,
+  &quot;sender&quot;: &quot;Ishan&quot;,
+  &quot;text&quot;: &quot;eyes&quot;
+}</pre></td></tr><tr><td>a09</td><td>edit</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-02&quot;,
+  &quot;text&quot;: &quot;Confirmed for eleven&quot;
+}</pre></td></tr><tr><td>a10</td><td>edit</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;,
+  &quot;text&quot;: &quot;Approved budget&quot;
+}</pre></td></tr><tr><td>a11</td><td>forward</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-04&quot;,
+  &quot;source_id&quot;: &quot;chat-01&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;recipient&quot;: &quot;Noor&quot;
+}</pre></td></tr><tr><td>a12</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-05&quot;,
+  &quot;sender&quot;: &quot;Noor&quot;,
+  &quot;recipient&quot;: &quot;Ravi&quot;,
+  &quot;text&quot;: &quot;Lunch?&quot;
+}</pre></td></tr><tr><td>a13</td><td>delete</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-03&quot;
+}</pre></td></tr><tr><td>a14</td><td>react</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-05&quot;,
+  &quot;sender&quot;: &quot;Ravi&quot;,
+  &quot;text&quot;: &quot;yes&quot;
+}</pre></td></tr><tr><td>a15</td><td>delete</td><td><pre>{
+  &quot;message_id&quot;: &quot;forwarded-42&quot;
+}</pre></td></tr><tr><td>a16</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-06&quot;,
+  &quot;sender&quot;: &quot;Ravi&quot;,
+  &quot;recipient&quot;: &quot;Noor&quot;,
+  &quot;text&quot;: &quot;At noon&quot;
+}</pre></td></tr><tr><td>a17</td><td>edit</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-06&quot;,
+  &quot;text&quot;: &quot;At twelve thirty&quot;
+}</pre></td></tr><tr><td>a18</td><td>react</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-04&quot;,
+  &quot;sender&quot;: &quot;Noor&quot;,
+  &quot;text&quot;: &quot;ok&quot;
+}</pre></td></tr><tr><td>a19</td><td>delete</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-02&quot;
+}</pre></td></tr><tr><td>a20</td><td>send</td><td><pre>{
+  &quot;message_id&quot;: &quot;chat-07&quot;,
+  &quot;sender&quot;: &quot;Maya&quot;,
+  &quot;recipient&quot;: &quot;Noor&quot;,
+  &quot;text&quot;: &quot;See you&quot;
+}</pre></td></tr></tbody></table>
+<h2>Expected evidence</h2><pre>[
+  {
+    &quot;message_id&quot;: &quot;forwarded-42&quot;,
+    &quot;sender&quot;: &quot;Maya&quot;,
+    &quot;recipient&quot;: &quot;Ishan&quot;,
+    &quot;text&quot;: null,
+    &quot;source_id&quot;: &quot;source-42&quot;,
+    &quot;edited&quot;: true,
+    &quot;deleted&quot;: true,
+    &quot;reactions&quot;: []
+  },
+  {
+    &quot;message_id&quot;: &quot;source-42&quot;,
+    &quot;sender&quot;: &quot;Noor&quot;,
+    &quot;recipient&quot;: &quot;Maya&quot;,
+    &quot;text&quot;: &quot;Draft budget&quot;,
+    &quot;source_id&quot;: null,
+    &quot;edited&quot;: false,
+    &quot;deleted&quot;: false,
+    &quot;reactions&quot;: []
+  }
+]</pre>
+<h2>Parser output</h2><pre>[
+  {
+    &quot;message_id&quot;: &quot;forwarded-42&quot;,
+    &quot;sender&quot;: &quot;Noor&quot;,
+    &quot;recipient&quot;: &quot;Ishan&quot;,
+    &quot;text&quot;: null,
+    &quot;source_id&quot;: &quot;source-42&quot;,
+    &quot;edited&quot;: true,
+    &quot;deleted&quot;: true,
+    &quot;reactions&quot;: []
+  },
+  {
+    &quot;message_id&quot;: &quot;source-42&quot;,
+    &quot;sender&quot;: &quot;Noor&quot;,
+    &quot;recipient&quot;: &quot;Maya&quot;,
+    &quot;text&quot;: &quot;Draft budget&quot;,
+    &quot;source_id&quot;: null,
+    &quot;edited&quot;: false,
+    &quot;deleted&quot;: false,
+    &quot;reactions&quot;: []
+  }
+]</pre>
+<h2>Reduction audit trail</h2><pre>[
+  {
+    &quot;phase&quot;: &quot;baseline&quot;,
+    &quot;count&quot;: 20,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 2
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 5,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 4,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 10,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 6,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 7,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 8,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 13,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 10,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 14,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 12,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 15,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 14,
+    &quot;accepted&quot;: true
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 4,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 16,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 8,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 18,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 10,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 20,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 6,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 22,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 8,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 24,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 11,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 26,
+    &quot;accepted&quot;: true
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 28,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 6,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 30,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 7,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 32,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 9,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 34,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 7,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 36,
+    &quot;accepted&quot;: true
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 38,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 6,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 40,
+    &quot;accepted&quot;: true
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 2,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 42,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 44,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 5,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 46,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 4,
+    &quot;status&quot;: &quot;FAIL&quot;,
+    &quot;signature&quot;: &quot;FIELD_SENDER:forwarded-42&quot;,
+    &quot;evaluations&quot;: 48,
+    &quot;accepted&quot;: true
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 0,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 50,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 1,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 52,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 54,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;partition&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 56,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;single-action verification&quot;,
+    &quot;count&quot;: 0,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 58,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;single-action verification&quot;,
+    &quot;count&quot;: 1,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 60,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;single-action verification&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 62,
+    &quot;accepted&quot;: false
+  },
+  {
+    &quot;phase&quot;: &quot;single-action verification&quot;,
+    &quot;count&quot;: 3,
+    &quot;status&quot;: &quot;PASS&quot;,
+    &quot;signature&quot;: null,
+    &quot;evaluations&quot;: 64,
+    &quot;accepted&quot;: false
+  }
+]</pre>
+<h2>Integrity and interpretation</h2><p>The accompanying manifest detects changes relative to its recorded hashes. It is not signed or independently anchored, so it cannot prove authenticity if an attacker replaces both files and manifest. A failure signature binds the error to a specific message and field. Inconclusive runs are never accepted as reproductions.</p>
+<p>Evidence is synthesized in fresh databases for each experiment. No source device or acquired case image is modified. The built-in fixed parser is a demonstration repair; passing a finite test suite is not proof of universal correctness.</p>
+</main></html>

@@ -1,0 +1,61 @@
+{
+  "status": "FAIL",
+  "signature": "FIELD_SENDER:forwarded-42",
+  "findings": [
+    {
+      "code": "FIELD_SENDER",
+      "message_id": "forwarded-42",
+      "expected": "Maya",
+      "actual": "Noor"
+    }
+  ],
+  "expected": [
+    {
+      "message_id": "forwarded-42",
+      "sender": "Maya",
+      "recipient": "Ishan",
+      "text": null,
+      "source_id": "source-42",
+      "edited": true,
+      "deleted": true,
+      "reactions": []
+    },
+    {
+      "message_id": "source-42",
+      "sender": "Noor",
+      "recipient": "Maya",
+      "text": "Draft budget",
+      "source_id": null,
+      "edited": false,
+      "deleted": false,
+      "reactions": []
+    }
+  ],
+  "actual": [
+    {
+      "message_id": "forwarded-42",
+      "sender": "Noor",
+      "recipient": "Ishan",
+      "text": null,
+      "source_id": "source-42",
+      "edited": true,
+      "deleted": true,
+      "reactions": []
+    },
+    {
+      "message_id": "source-42",
+      "sender": "Noor",
+      "recipient": "Maya",
+      "text": "Draft budget",
+      "source_id": null,
+      "edited": false,
+      "deleted": false,
+      "reactions": []
+    }
+  ],
+  "executed_actions": 4,
+  "version": "2",
+  "parser": "buggy",
+  "scope": "synthetic SQLite reference app",
+  "database_path": "evidence/minimized/evidence-v2.sqlite"
+}

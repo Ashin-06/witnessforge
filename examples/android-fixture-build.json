@@ -1,0 +1,10 @@
+{
+  "apk": "C:\\Users\\ashin\\Downloads\\New Project\\01-forensic-parser-minimizer\\build\\android-fixture\\witnessforge-fixture.apk",
+  "sha256": "a8ec831c32f77f2049ad6a5622dc3bc20ea05344f4ee2c174eb82bb907577030",
+  "sdk_build_tools": "36.1.0",
+  "source_sha256": {
+    "AndroidManifest.xml": "2ef0fe1fa5df9ad89871d1506767504345950fb62ea4560c79489ecf1fee51d5",
+    "src/org/witnessforge/fixture/MainActivity.java": "855413846d58f71b519d059a545556dde099f615b9445f0ba64a5d8342e0c3aa",
+    "expected.json": "f91fed01f9ae9739db2bf9e71612b2954e28f54a905a6486601c6ed20eb76e9a"
+  }
+}

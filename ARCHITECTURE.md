@@ -1,5 +1,11 @@
 # Architecture
 
+## External evidence path
+
+`adb.py` optionally obtains an exact allowlisted owned-app database set through ordinary ADB run-as, after explicit app-stop authorization. Two captures must match. `external.py` then captures stable original file bytes, validates WAL checksums, reconstructs SHM only on a disposable working copy, creates a standalone database through SQLite backup, checks integrity, and extracts an AOSP-compatible `sms` table. The same importer accepts already-exported files without ADB. An unsigned manifest covers original bytes, derived database, provenance, errors and extraction. Bundle verification reports byte integrity only.
+
+This CLI-only path returns `IMPORTED` or `UNRESOLVED`, never a semantic PASS from an unknown external dataset. It has its own evidence format (`witnessforge.external.v1`) and does not insert imported records into the synthetic action minimizer or browser case list. `android-fixture/` provides an actual Android app plus independent fixture assertions for runtime validation. [Integration contracts and commands](INTEGRATION.md) explain the supported schema and acquisition boundaries.
+
 ## Data flow
 
 ```text

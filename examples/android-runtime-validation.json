@@ -1,0 +1,110 @@
+{
+  "status": "PASS",
+  "scope": "Real Android runtime and ADB, owned synthetic fixture app, no real personal SMS or system Telephony provider validation.",
+  "serial": "emulator-5580",
+  "apk_sha256": "a8ec831c32f77f2049ad6a5622dc3bc20ea05344f4ee2c174eb82bb907577030",
+  "commands": [
+    {
+      "arguments": [
+        "install",
+        "-r",
+        "C:\\Users\\ashin\\Downloads\\New Project\\01-forensic-parser-minimizer\\build\\android-fixture\\witnessforge-fixture.apk"
+      ],
+      "exit_code": 0,
+      "stdout": "Performing Incremental Install\r\nPerforming Streamed Install\r\nSuccess\r\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "shell",
+        "am",
+        "force-stop",
+        "org.witnessforge.fixture"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "shell",
+        "am",
+        "start",
+        "-W",
+        "-n",
+        "org.witnessforge.fixture/.MainActivity"
+      ],
+      "exit_code": 0,
+      "stdout": "Starting: Intent { cmp=org.witnessforge.fixture/.MainActivity }\r\nStatus: ok\r\nLaunchState: COLD\r\nActivity: org.witnessforge.fixture/.MainActivity\r\nTotalTime: 5410\r\nWaitTime: 5436\r\nComplete\r\n",
+      "stderr": ""
+    }
+  ],
+  "import_status": "IMPORTED",
+  "expected": [
+    {
+      "source_id": 1,
+      "counterparty": "+15550001001",
+      "body": "Owned fixture: incoming",
+      "direction": "incoming",
+      "message_type": "inbox",
+      "date_utc": "2023-11-14T22:13:20.123+00:00"
+    },
+    {
+      "source_id": 2,
+      "counterparty": "+15550001001",
+      "body": "Owned fixture: sent from WAL",
+      "direction": "outgoing",
+      "message_type": "sent",
+      "date_utc": "2023-11-14T22:13:21.123+00:00"
+    },
+    {
+      "source_id": 3,
+      "counterparty": null,
+      "body": "Draft unicode: café ☕",
+      "direction": "outgoing",
+      "message_type": "draft",
+      "date_utc": "2023-11-14T22:13:22.123+00:00"
+    }
+  ],
+  "actual": [
+    {
+      "source_id": 1,
+      "counterparty": "+15550001001",
+      "body": "Owned fixture: incoming",
+      "direction": "incoming",
+      "message_type": "inbox",
+      "date_utc": "2023-11-14T22:13:20.123+00:00"
+    },
+    {
+      "source_id": 2,
+      "counterparty": "+15550001001",
+      "body": "Owned fixture: sent from WAL",
+      "direction": "outgoing",
+      "message_type": "sent",
+      "date_utc": "2023-11-14T22:13:21.123+00:00"
+    },
+    {
+      "source_id": 3,
+      "counterparty": null,
+      "body": "Draft unicode: café ☕",
+      "direction": "outgoing",
+      "message_type": "draft",
+      "date_utc": "2023-11-14T22:13:22.123+00:00"
+    }
+  ],
+  "semantic_match": true,
+  "committed_wal_preserved": true,
+  "integrity": {
+    "status": "PASS",
+    "checked_files": 5,
+    "errors": [],
+    "meaning": "Byte integrity against an unsigned manifest only; not parser correctness or authentic provenance."
+  },
+  "build_fingerprint": "google/sdk_gphone16k_x86_64/emu64xa16k:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+  "expected_sha256": "f91fed01f9ae9739db2bf9e71612b2954e28f54a905a6486601c6ed20eb76e9a",
+  "bundle": {
+    "status": "BUNDLED",
+    "path": "C:\\Users\\ashin\\Downloads\\New Project\\01-forensic-parser-minimizer\\.test-output\\android-runtime-v2\\evidence.zip",
+    "sha256": "ed66a1a2580a93deeb439ff64787b442394c1446af6765ed90afa96c2ebefb2b"
+  }
+}

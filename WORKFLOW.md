@@ -1,5 +1,7 @@
 # How the project works
 
+For an already-exported real database, use the separate [external evidence workflow](INTEGRATION.md): preserve database/WAL bytes, recover a disposable copy, extract supported SMS records, inspect uncertainty, verify the manifest, then export a ZIP. For an owned debuggable Android app, the same workflow can begin with an explicitly allowlisted ADB capture. Imported files have no action ground truth, so the reduction procedure below applies to the controlled reference application only.
+
 ## Worked example
 
 1. Noor sends message `source-42` to Maya.

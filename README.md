@@ -2,9 +2,11 @@
 
 WitnessForge reproduces a forensic parser's incorrect interpretation, reduces the action history while preserving the same error field and message identity, and checks a candidate repair against independent examples.
 
-**Implemented scope:** a runnable local research prototype using a synthetic messaging application that produces real SQLite databases in three schema versions. It includes a deliberately defective parser, a corrected parser, a browser workbench, a CLI, custom parser support, evidence reports, hash verification, and automated tests. No AI API is needed.
+**Implemented scope:** a runnable local research prototype using a synthetic messaging application that produces real SQLite databases in three schema versions, plus a separate real-evidence workflow. The latter imports externally exported SQLite/WAL files, parses a documented AOSP-compatible SMS table, and acquires allowlisted databases from owned debuggable Android apps through ADB. A real Android emulator run recovered committed WAL records from the included owned fixture app. The browser workbench, semantic minimizer, custom parsers, repair suite, reports, and hash verification remain available. No AI API is needed.
 
-**Not implemented:** real Android acquisition, Puma/ALEAPP adapters for production applications, automatic AI patch generation, signed chain of custody, or a general proof of parser correctness. The built-in repair is explicit code, not an AI-generated claim.
+**Limits:** real-evidence import/acquisition is a CLI workflow, with no claim of external semantic ground truth. Android action replay/minimization for arbitrary apps, privileged system-provider acquisition, encrypted databases, deleted-record carving, Puma/ALEAPP adapters, automatic AI patch generation, and signed chain of custody are not implemented. The built-in repair is explicit code. The Android validation used an owned test app with synthetic records, not personal messages or the system Telephony provider.
+
+For real file import, ADB acquisition, and an independently checked Android fixture run, follow [INTEGRATION.md](INTEGRATION.md). A captured emulator example is in [examples/android-fixture-evidence](examples/android-fixture-evidence), with [validation results](examples/android-runtime-validation.json).
 
 ## Quick start
 
@@ -55,6 +57,14 @@ python -m witnessforge validate-repair --parser-file examples/custom_parser.py
 # Verify an existing case directory; substitute an actual case ID.
 python -m witnessforge verify cases/CASE_ID
 
+# Import an authorized export; keep mmssms.db-wal/-shm beside mmssms.db if present.
+python -m witnessforge import-sqlite path/to/mmssms.db --output evidence/my-import
+python -m witnessforge verify-evidence evidence/my-import
+python -m witnessforge bundle-evidence evidence/my-import --output evidence/my-import.zip
+
+# Inspect acquisition prerequisites without acquiring any app data.
+python -m witnessforge adb-status
+
 # Run the automated tests.
 python -m unittest discover -s tests -v
 ```
@@ -77,6 +87,8 @@ python -m unittest discover -s tests -v
   witnessforge/
     core.py                   Action specification, SQLite simulator, parsers, reducer, repair suite
     cases.py                  Case persistence, SHA-256 manifests, bundles
+    external.py               Original-byte capture, WAL validation, SQLite recovery, AOSP SMS extraction
+    adb.py                    Explicit allowlist, debuggable app acquisition, device capability reporting
     reports.py                Standalone escaped HTML reports
     cli.py / __main__.py       Command-line interface
     plugins.py                Timeout and integrity wrapper for custom parser processes
@@ -86,6 +98,9 @@ python -m unittest discover -s tests -v
   examples/
     custom_parser.py          Runnable parser extension example
     demo-trace.json            Default 20-action experiment
+    adb-allowlist.json         Exact owned fixture package/database authorization
+    android-fixture-evidence/ Real emulator acquisition containing only synthetic fixture records
+  android-fixture/            Java app, no-Gradle build, independent expectations, device validation script
   tests/
     test_core.py              Semantic, reduction, dependency and stability checks
     test_integration.py       CLI, HTTP, evidence, report and plugin checks

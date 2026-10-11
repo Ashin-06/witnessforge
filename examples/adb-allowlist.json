@@ -1,0 +1,6 @@
+{
+  "format": "witnessforge.adb.allowlist.v1",
+  "packages": {
+    "org.witnessforge.fixture": ["databases/mmssms.db"]
+  }
+}

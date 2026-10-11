@@ -1,0 +1,9 @@
+{
+  "fixture": "org.witnessforge.fixture/v1",
+  "scope": "Independent assertions for an owned Android test app; not real user SMS or a system provider validation.",
+  "records": [
+    {"source_id": 1, "counterparty": "+15550001001", "body": "Owned fixture: incoming", "direction": "incoming", "message_type": "inbox", "date_utc": "2023-11-14T22:13:20.123+00:00"},
+    {"source_id": 2, "counterparty": "+15550001001", "body": "Owned fixture: sent from WAL", "direction": "outgoing", "message_type": "sent", "date_utc": "2023-11-14T22:13:21.123+00:00"},
+    {"source_id": 3, "counterparty": null, "body": "Draft unicode: café ☕", "direction": "outgoing", "message_type": "draft", "date_utc": "2023-11-14T22:13:22.123+00:00"}
+  ]
+}

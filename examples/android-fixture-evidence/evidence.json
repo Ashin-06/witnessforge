@@ -1,0 +1,500 @@
+{
+  "format": "witnessforge.external.v1",
+  "status": "IMPORTED",
+  "captured_at": "2026-10-11T00:34:15.274357+00:00",
+  "scope": "External SQLite evidence; AOSP-compatible sms table. No deleted-record carving, MMS, encrypted database support, or semantic ground truth.",
+  "source_files": [
+    {
+      "source_path": "C:\\Users\\ashin\\AppData\\Local\\Temp\\witnessforge-adb-495dvgu_\\0\\evidence.sqlite",
+      "bundle_path": "originals/evidence.sqlite",
+      "size": 16384,
+      "mtime_ns": 1791678853331471700,
+      "sha256": "d552a009077b0e584db0ba0d64e5d02fb6b0694edd339a36f8910a2650db01c5"
+    },
+    {
+      "source_path": "C:\\Users\\ashin\\AppData\\Local\\Temp\\witnessforge-adb-495dvgu_\\0\\evidence.sqlite-wal",
+      "bundle_path": "originals/evidence.sqlite-wal",
+      "size": 8272,
+      "mtime_ns": 1791678853688510400,
+      "sha256": "6ab20a60784e2985811aa4d64426eaa1f5db3dd51be5e2c87fb62c97cd73db57"
+    },
+    {
+      "source_path": "C:\\Users\\ashin\\AppData\\Local\\Temp\\witnessforge-adb-495dvgu_\\0\\evidence.sqlite-shm",
+      "bundle_path": "originals/evidence.sqlite-shm",
+      "size": 32768,
+      "mtime_ns": 1791678854025949400,
+      "sha256": "d975dd1638069b4a68a8f00d6336fe67bc2e5c941a315acafa3cb386fe4518b2"
+    }
+  ],
+  "provenance": {
+    "method": "adb-run-as-double-capture",
+    "serial": "emulator-5580",
+    "package": "org.witnessforge.fixture",
+    "database": "databases/mmssms.db",
+    "android_build_fingerprint": "google/sdk_gphone16k_x86_64/emu64xa16k:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+    "android_sdk": "35",
+    "run_as_identity": "uid=10207(u0_a207) gid=10207(u0_a207) groups=10207(u0_a207),1004(input),1007(log),1011(adb),1015(sdcard_rw),1028(sdcard_r),1078(ext_data_rw),1079(ext_obb_rw),3001(net_bt_admin),3002(net_bt),3003(inet),3006(net_bw_stats),3009(readproc),3011(uhid),3012(readtracefs),50207(all_a207) context=u:r:runas_app:s0:c207,c256,c512,c768",
+    "adb_executable": "C:\\Users\\ashin\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe",
+    "adb_sha256": "56656270da132f44e9cb4fb86a12ba965635c80423d43dcdd944d9fec4ab4622",
+    "allowlist_sha256": "1c303f0b5be15ace63fe8812f8603ced87954c4f5f0e15cb94cdb209cb9ffe50",
+    "app_force_stopped": true,
+    "app_left_stopped": true,
+    "matching_capture_passes": 2,
+    "capture_hashes": {
+      "": "d552a009077b0e584db0ba0d64e5d02fb6b0694edd339a36f8910a2650db01c5",
+      "-wal": "6ab20a60784e2985811aa4d64426eaa1f5db3dd51be5e2c87fb62c97cd73db57",
+      "-shm": "d975dd1638069b4a68a8f00d6336fe67bc2e5c941a315acafa3cb386fe4518b2"
+    },
+    "commands": [
+      {
+        "arguments": [
+          "get-state"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 8
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "id"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 326
+      },
+      {
+        "arguments": [
+          "shell",
+          "getprop",
+          "ro.build.fingerprint"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 87
+      },
+      {
+        "arguments": [
+          "shell",
+          "getprop",
+          "ro.build.version.sdk"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 4
+      },
+      {
+        "arguments": [
+          "shell",
+          "am",
+          "force-stop",
+          "org.witnessforge.fixture"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 59
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 16384
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 63
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 8272
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 63
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 32768
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-journal"
+        ],
+        "exit_code": 1,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 59
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 16384
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 63
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db-wal"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 8272
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 0
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "readlink",
+          "-f",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 63
+      },
+      {
+        "arguments": [
+          "exec-out",
+          "run-as",
+          "org.witnessforge.fixture",
+          "cat",
+          "databases/mmssms.db-shm"
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "stdout_bytes": 32768
+      },
+      {
+        "arguments": [
+          "shell",
+          "-T",
+          "run-as",
+          "org.witnessforge.fixture",
+          "test",
+          "-f",
+          "databases/mmssms.db-journal"
+        ],
+        "exit_code": 1,
+        "stderr": "",
+        "stdout_bytes": 0
+      }
+    ],
+    "limits": "Matching reads reduce races but do not prove an atomic or complete acquisition. Captures are app data, not physical filesystem images."
+  },
+  "source_bytes_unchanged_during_capture": true,
+  "ground_truth_available": false,
+  "acquisition_completeness": "not established",
+  "warnings": [],
+  "errors": [],
+  "sqlite_version": "3.45.1",
+  "parser": "android-sms",
+  "wal": {
+    "bytes": 8272,
+    "page_size": 4096,
+    "valid_frames": 2,
+    "commits": 2,
+    "ignored_recycled_frames": 0
+  },
+  "integrity_check": [
+    "ok"
+  ],
+  "tables": [
+    "android_metadata",
+    "sms"
+  ],
+  "extraction": {
+    "parser": "aosp-sms-v1",
+    "schema_columns": [
+      "_id",
+      "address",
+      "body",
+      "date",
+      "date_sent",
+      "read",
+      "service_center",
+      "status",
+      "sub_id",
+      "subject",
+      "thread_id",
+      "type"
+    ],
+    "unavailable_optional_columns": [
+      "creator",
+      "error_code",
+      "locked",
+      "protocol",
+      "seen"
+    ],
+    "record_count": 3,
+    "records": [
+      {
+        "artifact": "android.sms",
+        "source_table": "sms",
+        "source_id": 1,
+        "counterparty": "+15550001001",
+        "body": "Owned fixture: incoming",
+        "direction": "incoming",
+        "message_type": "inbox",
+        "date_utc": "2023-11-14T22:13:20.123+00:00",
+        "date_sent_utc": "2023-11-14T22:13:20.000+00:00",
+        "raw": {
+          "_id": 1,
+          "address": "+15550001001",
+          "date": 1700000000123,
+          "type": 1,
+          "body": "Owned fixture: incoming",
+          "thread_id": 7,
+          "date_sent": 1700000000000,
+          "read": 1,
+          "status": -1,
+          "subject": null,
+          "service_center": null,
+          "sub_id": 1
+        }
+      },
+      {
+        "artifact": "android.sms",
+        "source_table": "sms",
+        "source_id": 2,
+        "counterparty": "+15550001001",
+        "body": "Owned fixture: sent from WAL",
+        "direction": "outgoing",
+        "message_type": "sent",
+        "date_utc": "2023-11-14T22:13:21.123+00:00",
+        "date_sent_utc": null,
+        "raw": {
+          "_id": 2,
+          "address": "+15550001001",
+          "date": 1700000001123,
+          "type": 2,
+          "body": "Owned fixture: sent from WAL",
+          "thread_id": 7,
+          "date_sent": 0,
+          "read": 1,
+          "status": -1,
+          "subject": null,
+          "service_center": null,
+          "sub_id": 1
+        }
+      },
+      {
+        "artifact": "android.sms",
+        "source_table": "sms",
+        "source_id": 3,
+        "counterparty": null,
+        "body": "Draft unicode: café ☕",
+        "direction": "outgoing",
+        "message_type": "draft",
+        "date_utc": "2023-11-14T22:13:22.123+00:00",
+        "date_sent_utc": null,
+        "raw": {
+          "_id": 3,
+          "address": null,
+          "date": 1700000002123,
+          "type": 3,
+          "body": "Draft unicode: café ☕",
+          "thread_id": 8,
+          "date_sent": 0,
+          "read": 0,
+          "status": -1,
+          "subject": null,
+          "service_center": null,
+          "sub_id": 2
+        }
+      }
+    ],
+    "warnings": [],
+    "type_counts": {
+      "inbox": 1,
+      "sent": 1,
+      "draft": 1
+    }
+  }
+}

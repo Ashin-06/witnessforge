@@ -1,0 +1,12 @@
+{
+  "format": "witnessforge.external.manifest.v1",
+  "algorithm": "sha256",
+  "files": {
+    "evidence.json": "d5b4d8aad77cbb169fc58a96e5ebb13a23697d1fe4aba94457160d87f9a41f43",
+    "derived/snapshot.sqlite": "dd667bb8b4a33151f2614d3a371d3524ccebaccbf53034b2dfec6f491cacc94f",
+    "originals/evidence.sqlite": "d552a009077b0e584db0ba0d64e5d02fb6b0694edd339a36f8910a2650db01c5",
+    "originals/evidence.sqlite-shm": "d975dd1638069b4a68a8f00d6336fe67bc2e5c941a315acafa3cb386fe4518b2",
+    "originals/evidence.sqlite-wal": "6ab20a60784e2985811aa4d64426eaa1f5db3dd51be5e2c87fb62c97cd73db57"
+  },
+  "notice": "Unsigned integrity inventory; does not prove origin, completeness, or custody."
+}

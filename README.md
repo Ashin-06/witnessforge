@@ -10,7 +10,7 @@ For real file import, ADB acquisition, and an independently checked Android fixt
 
 ## Quick start
 
-Requires Python 3.10+; tested here with Python 3.12 on Windows. Run from this folder. There are no third-party runtime dependencies and no package installation is needed.
+Requires Python 3.12+; tested here with Python 3.12 on Windows. Run from this folder. There are no third-party runtime dependencies and no package installation is needed.
 
 ```powershell
 python -m witnessforge serve
@@ -93,7 +93,8 @@ python -m unittest discover -s tests -v
     cli.py / __main__.py       Command-line interface
     plugins.py                Timeout and integrity wrapper for custom parser processes
     plugin_worker.py          Trusted parser module execution
-    server.py                 Loopback HTTP API and static asset delivery
+    server.py                 HTTP API and static asset delivery (loopback by default)
+    ops.py                    Settings, API keys and roles, rate limits, JSON logs, metrics
     static/                   HTML, CSS, browser JavaScript
   examples/
     custom_parser.py          Runnable parser extension example
@@ -119,10 +120,37 @@ See [ARCHITECTURE.md](ARCHITECTURE.md), [WORKFLOW.md](WORKFLOW.md), and [TRACE_F
 | 1-minimal | No tested removal of one retained action plus its dependents preserves the target error. Not a globally shortest trace. |
 | Budget exhausted | Reduction stopped before completing the search or minimality checks. The report states this explicitly. |
 
+## Running as a service
+
+The container image runs the same workbench in production mode, still with no third-party packages:
+
+```bash
+docker build -t witnessforge .
+python -m witnessforge.ops keygen            # one API key per person: analyst, viewer or monitor
+docker run -d --name witnessforge -p 8765:8765 -v witnessforge-data:/data \
+  -e WITNESSFORGE_KEYS_FILE=/run/secrets/witnessforge-keys.json -e WITNESSFORGE_ALLOWED_HOSTS=lab.example.org \
+  witnessforge
+```
+
+With API keys configured, every `/api` route needs a key (`X-API-Key` or `Authorization: Bearer`): `analyst` runs experiments, `viewer` opens saved cases and downloads, `monitor` reads `/metrics`. The page asks for the key once per browser session. `/healthz` and `/readyz` are open for probes; requests are rate-limited per client and logged as JSON lines with request IDs, without submitted content. See [docs/runbook.md](docs/runbook.md) and [docs/threat-model.md](docs/threat-model.md).
+
+| Variable | Purpose |
+|---|---|
+| `WITNESSFORGE_ENV=production` | refuse to start without hashed API keys |
+| `WITNESSFORGE_API_KEYS` / `WITNESSFORGE_KEYS_FILE` | hashed API keys with roles |
+| `WITNESSFORGE_HOST`, `WITNESSFORGE_PORT` | default `127.0.0.1:8765`; any other address needs API keys |
+| `WITNESSFORGE_ALLOWED_HOSTS` | host names clients use, besides loopback (DNS-rebinding protection) |
+| `WITNESSFORGE_DATA_DIR` | where cases are kept (default `./cases`, `/data` in the image) |
+| `WITNESSFORGE_RATE_LIMIT` | requests per minute per client (default 120) |
+
 ## Local operation and evidence boundaries
 
 The browser interface accepts only built-in parsers. Custom Python parsers are CLI-only and **must be trusted**: a separate process and a timeout do not create a security sandbox. Candidate database mutation is detected, but arbitrary host access by a malicious plugin is not prevented.
 
-Every experiment uses fresh synthetic evidence. Case IDs are generated locally. Case files may contain whatever text you enter, so use synthetic data for demonstrations. The local service checks Host and Origin, limits request size and concurrent experiments, and has no cloud calls or remote assets. It is not designed for exposure on a network or for untrusted multi-user hosting.
+Every experiment uses fresh synthetic evidence. Case IDs are generated locally. Case files may contain whatever text you enter, so use synthetic data for demonstrations. The local service checks Host and Origin, limits request size and concurrent experiments, and has no cloud calls or remote assets. On a network it needs API keys and `WITNESSFORGE_ALLOWED_HOSTS`, and it is still single-tenant: every key sees every case, and experiments run one at a time.
 
 The manifest is unsigned. It detects edits relative to the recorded hashes; it does not establish provenance if someone can replace both evidence and manifest. A repaired parser passing 27 tests is useful regression evidence, not proof of universal correctness or legal admissibility.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

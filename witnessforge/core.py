@@ -175,15 +175,15 @@ def replay_to_database(trace: list[dict], version: str, output_path: Path) -> st
                         if op == "send":
                             content, source_id, original = event["text"], None, None
                         else:
-                            content, previous_sender, previous_origin = db.execute(f"SELECT {body}, {sender}, {origin} FROM {table} WHERE {key}=?", (event["source_id"],)).fetchone()
+                            content, previous_sender, previous_origin = db.execute(f"SELECT {body}, {sender}, {origin} FROM {table} WHERE {key}=?", (event["source_id"],)).fetchone()  # nosec B608 - identifiers from the fixed _LAYOUTS table
                             source_id, original = event["source_id"], previous_origin or previous_sender
-                        db.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, 0, 0)", (mid, event["sender"], event["recipient"], content, source_id, original))
+                        db.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, 0, 0)", (mid, event["sender"], event["recipient"], content, source_id, original))  # nosec B608 - identifiers from the fixed _LAYOUTS table
                     elif op == "edit":
-                        db.execute(f"UPDATE {table} SET {body}=?, {edit}={edit}+1 WHERE {key}=?", (event["text"], mid))
+                        db.execute(f"UPDATE {table} SET {body}=?, {edit}={edit}+1 WHERE {key}=?", (event["text"], mid))  # nosec B608 - identifiers from the fixed _LAYOUTS table
                     elif op == "delete":
-                        db.execute(f"UPDATE {table} SET {body}=NULL, {deleted}=1 WHERE {key}=?", (mid,))
+                        db.execute(f"UPDATE {table} SET {body}=NULL, {deleted}=1 WHERE {key}=?", (mid,))  # nosec B608 - identifiers from the fixed _LAYOUTS table
                     else:
-                        db.execute(f"INSERT INTO {react} VALUES (?, ?, ?)", (mid, event["sender"], event["text"]))
+                        db.execute(f"INSERT INTO {react} VALUES (?, ?, ?)", (mid, event["sender"], event["text"]))  # nosec B608 - identifiers from the fixed _LAYOUTS table
             else:
                 db.execute("CREATE TABLE message_records (mid TEXT PRIMARY KEY, envelope TEXT NOT NULL, payload TEXT, state INTEGER NOT NULL)")
                 db.execute("CREATE TABLE message_reactions (mid TEXT NOT NULL, actor TEXT NOT NULL, value TEXT NOT NULL)")
@@ -219,8 +219,8 @@ def parse_database(database_path: Path, parser: str = "fixed") -> list[dict]:
         version = _version(db.execute("SELECT schema_version FROM reference_app").fetchone()[0])
         if version in _LAYOUTS:
             table, key, sender, peer, body, source, origin, edit, deleted, react, rmid, actor, emoji = _LAYOUTS[version]
-            raw = db.execute(f"SELECT {key}, {sender}, {peer}, {body}, {source}, {origin}, {edit}, {deleted} FROM {table}").fetchall()
-            reactions = db.execute(f"SELECT {rmid}, {actor}, {emoji} FROM {react}").fetchall()
+            raw = db.execute(f"SELECT {key}, {sender}, {peer}, {body}, {source}, {origin}, {edit}, {deleted} FROM {table}").fetchall()  # nosec B608 - identifiers from the fixed _LAYOUTS table
+            reactions = db.execute(f"SELECT {rmid}, {actor}, {emoji} FROM {react}").fetchall()  # nosec B608 - identifiers from the fixed _LAYOUTS table
         else:
             raw = []
             for mid, envelope, payload, flags in db.execute("SELECT mid, envelope, payload, state FROM message_records"):

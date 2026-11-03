@@ -16,7 +16,7 @@ def main():
     with contextlib.redirect_stdout(sys.stderr):
         # Always execute the current source. Timestamp-based bytecode caches can
         # otherwise reuse a same-size parser edit made within the same second.
-        exec(compile(Path(filename).read_bytes(), filename, 'exec'), module.__dict__)
+        exec(compile(Path(filename).read_bytes(), filename, 'exec'), module.__dict__)  # nosec B102 - runs the examiner's own plugin by design; see the module docstring
         if not callable(getattr(module, 'parse', None)):
             raise ValueError('Parser module must define parse(database_path).')
         records = module.parse(Path(database))
@@ -30,4 +30,4 @@ if __name__ == '__main__':
         main()
     except Exception as exc:
         print(f'{type(exc).__name__}: {exc}', file=sys.stderr)
-        raise SystemExit(2)
+        raise SystemExit(2) from None

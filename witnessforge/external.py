@@ -9,9 +9,13 @@ from contextlib import closing
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
+import os
 from pathlib import Path
+import re
 import shutil
 import sqlite3
+import stat
 import struct
 import tempfile
 import time
@@ -19,6 +23,12 @@ import zipfile
 
 MAX_FILE_BYTES = 64 * 1024 * 1024
 MAX_ROWS = 100_000
+MAX_EXTRACTION_BYTES = 32 * 1024 * 1024
+MAX_CELL_BYTES = 8 * 1024 * 1024
+MAX_BUNDLE_BYTES = 8 * MAX_FILE_BYTES
+EVIDENCE_FILES = frozenset({'evidence.json', 'derived/snapshot.sqlite', 'originals/evidence.sqlite',
+                            'originals/evidence.sqlite-wal', 'originals/evidence.sqlite-shm',
+                            'originals/evidence.sqlite-journal'})
 SMS_REQUIRED = ('_id', 'address', 'date', 'type', 'body')
 SMS_OPTIONAL = ('thread_id', 'date_sent', 'read', 'status', 'subject', 'service_center',
                 'sub_id', 'creator', 'seen', 'locked', 'error_code', 'protocol')
@@ -27,13 +37,38 @@ SCOPE = 'External SQLite evidence; AOSP-compatible sms table. No deleted-record 
 
 
 def _json(path, value):
-    Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    data = (json.dumps(value, ensure_ascii=False, allow_nan=False, indent=2) + '\n').encode('utf-8')
+    if len(data) > MAX_FILE_BYTES:
+        raise ValueError('Evidence JSON exceeds the 64 MiB output limit.')
+    Path(path).write_bytes(data)
 
 
-def _digest(path):
+def _read_bytes(path, limit):
+    path = Path(path)
+    if not stat.S_ISREG(path.lstat().st_mode):
+        raise ValueError('Evidence must be a regular file, not a link or special file.')
+    with path.open('rb') as stream:
+        if os.fstat(stream.fileno()).st_size > limit:
+            raise ValueError('Evidence file exceeds its size limit.')
+        data = stream.read(limit + 1)
+    if len(data) > limit:
+        raise ValueError('Evidence file grew beyond its size limit.')
+    return data
+
+
+def _digest(path, max_bytes=None):
+    limit = MAX_FILE_BYTES if max_bytes is None else max_bytes
+    if not stat.S_ISREG(Path(path).lstat().st_mode):
+        raise ValueError('Only regular evidence files may be hashed.')
     digest = hashlib.sha256()
     with Path(path).open('rb') as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError('Only regular evidence files may be hashed.')
+        consumed = 0
         for block in iter(lambda: stream.read(1024 * 1024), b''):
+            consumed += len(block)
+            if consumed > limit:
+                raise ValueError('Evidence file exceeds its hash size limit.')
             digest.update(block)
     return digest.hexdigest()
 
@@ -51,7 +86,7 @@ def _sources(database):
     result = {'': database}
     for suffix in ('-wal', '-shm', '-journal'):
         path = Path(str(database) + suffix)
-        if path.exists():
+        if path.exists() or path.is_symlink():
             result[suffix] = path
     return result
 
@@ -91,7 +126,7 @@ def _wal_info(path):
     A stale salt marks a recycled tail and is reported. Other truncation/checksum
     errors are unresolved, even if SQLite could recover a shorter prefix.
     """
-    data = Path(path).read_bytes()
+    data = _read_bytes(path, MAX_FILE_BYTES)
     if not data:
         return {'bytes': 0, 'valid_frames': 0, 'commits': 0, 'ignored_recycled_frames': 0}
     if len(data) < 32:
@@ -122,6 +157,8 @@ def _wal_info(path):
         frame = data[offset:offset + frame_size]
         page, db_size, fs1, fs2, fc1, fc2 = struct.unpack('>6I', frame[:24])
         if (fs1, fs2) != (salt1, salt2):
+            if not valid:
+                raise ValueError('WAL first frame salt does not match its header; capture is unresolved.')
             ignored = frames - index
             break
         if page == 0 or checksum(frame[:8] + frame[24:], c1, c2) != (fc1, fc2):
@@ -151,47 +188,69 @@ def parse_android_sms(database, max_rows=MAX_ROWS):
     if isinstance(max_rows, bool) or not isinstance(max_rows, int) or not 1 <= max_rows <= MAX_ROWS:
         raise ValueError('max_rows must be an integer from 1 through 100000.')
     deadline = time.monotonic() + 15
+    if Path(database).stat().st_size > MAX_FILE_BYTES:
+        raise ValueError('Database exceeds the 64 MiB parsing limit.')
     with closing(sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)) as connection:
         connection.execute('PRAGMA query_only=ON')
         connection.execute('PRAGMA trusted_schema=OFF')
-        connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 8 * 1024 * 1024) if hasattr(connection, 'setlimit') else None
+        connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, MAX_CELL_BYTES) if hasattr(connection, 'setlimit') else None
         connection.set_progress_handler(lambda: int(time.monotonic() > deadline), 1000)
         schema = connection.execute("SELECT type, sql FROM sqlite_master WHERE name='sms'").fetchone()
         if not schema or schema[0] != 'table' or not schema[1] or 'VIRTUAL TABLE' in schema[1].upper():
             raise ValueError('Supported ordinary sms table was not found; encrypted/other app schemas are unsupported.')
         columns = {row[1] for row in connection.execute('PRAGMA table_info(sms)')}
+        if len(columns) > 256 or any(len(name) > 256 for name in columns):
+            raise ValueError('SMS schema exceeds the supported column limits.')
         missing = sorted(set(SMS_REQUIRED) - columns)
         if missing:
             raise ValueError('Unsupported SMS schema: missing columns ' + ', '.join(missing))
         fields = list(SMS_REQUIRED) + [name for name in SMS_OPTIONAL if name in columns]
-        rows = connection.execute('SELECT ' + ','.join('"' + field + '"' for field in fields) + ' FROM sms ORDER BY _id LIMIT ?', (max_rows + 1,)).fetchall()
-        if len(rows) > max_rows:
-            raise ValueError('SMS row limit exceeded; no partial extraction is labeled imported.')
+        # SQL length checks also work on Python 3.10, which has no setlimit API.
+        excessive = ' OR '.join('length(CAST("' + field + '" AS BLOB)) > ?' for field in fields)
+        if connection.execute('SELECT 1 FROM sms WHERE ' + excessive + ' LIMIT 1', (MAX_CELL_BYTES,) * len(fields)).fetchone():  # nosec B608 - quoted allow-listed columns
+            raise ValueError('SMS cell exceeds the 8 MiB value limit.')
+        rows = connection.execute('SELECT ' + ','.join('"' + field + '"' for field in fields) + ' FROM sms ORDER BY _id LIMIT ?', (max_rows + 1,))  # nosec B608 - quoted allow-listed columns
         records = []
         warnings = []
+        warnings_suppressed = 0
+        extracted_bytes = 0
         ids = set()
         for values in rows:
+            if len(records) >= max_rows:
+                raise ValueError('SMS row limit exceeded; no partial extraction is labeled imported.')
+            if time.monotonic() > deadline:
+                raise ValueError('SMS extraction exceeded the query/conversion time budget.')
             raw = dict(zip(fields, values))
             if any(isinstance(value, bytes) for value in values):
                 raise ValueError('Unexpected BLOB in SMS fields; schema interpretation is unresolved.')
+            if any(isinstance(value, float) and not math.isfinite(value) for value in values):
+                raise ValueError('Non-finite numeric SMS value cannot be represented in strict JSON.')
             if not isinstance(raw['_id'], int) or raw['_id'] in ids:
                 raise ValueError('SMS _id must be a unique integer.')
             ids.add(raw['_id'])
             message_type = raw['type']
             direction = 'incoming' if message_type == 1 else ('outgoing' if message_type in (2, 3, 4, 5, 6) else 'unknown')
             if message_type not in SMS_TYPES:
-                warnings.append(f"SMS {raw['_id']} has unknown type {message_type!r}; no direction inferred.")
+                warnings.append(f"SMS {raw['_id']} has unknown type {str(message_type)[:160]!r}; no direction inferred.")
             timestamp = _utc_milliseconds(raw['date'])
             if timestamp is None:
                 warnings.append(f"SMS {raw['_id']} has an uninterpretable date; raw value retained.")
-            records.append({'artifact': 'android.sms', 'source_table': 'sms', 'source_id': raw['_id'],
+            record = {'artifact': 'android.sms', 'source_table': 'sms', 'source_id': raw['_id'],
                             'counterparty': raw['address'], 'body': raw['body'], 'direction': direction,
                             'message_type': SMS_TYPES.get(message_type, 'unknown'), 'date_utc': timestamp,
                             'date_sent_utc': _utc_milliseconds(raw.get('date_sent')) if raw.get('date_sent') else None,
-                            'raw': raw})
+                            'raw': raw}
+            extracted_bytes += len(json.dumps(record, ensure_ascii=False, allow_nan=False).encode('utf-8'))
+            if extracted_bytes > MAX_EXTRACTION_BYTES:
+                raise ValueError('SMS extraction exceeds the 32 MiB serialized record limit.')
+            records.append(record)
+            if len(warnings) > 1000:
+                warnings_suppressed += len(warnings) - 1000
+                del warnings[1000:]
         return {'parser': 'aosp-sms-v1', 'schema_columns': sorted(columns),
                 'unavailable_optional_columns': sorted(set(SMS_OPTIONAL) - columns),
                 'record_count': len(records), 'records': records, 'warnings': warnings,
+                'warnings_suppressed': warnings_suppressed,
                 'type_counts': dict(Counter(record['message_type'] for record in records))}
 
 
@@ -228,6 +287,10 @@ def import_sqlite(database, output, parser='android-sms', provenance=None):
             wal = Path(str(original) + '-wal')
             if wal.exists():
                 report['wal'] = _wal_info(wal)
+                page_size = int.from_bytes(header[16:18], 'big')
+                page_size = 65536 if page_size == 1 else page_size
+                if report['wal'].get('page_size', page_size) != page_size:
+                    raise ValueError('Database and WAL page sizes differ; capture is unresolved.')
                 if report['wal'].get('ignored_recycled_frames'):
                     report['warnings'].append('WAL has recycled trailing frames outside its current valid salt sequence.')
             elif header[18] == 2 or header[19] == 2:
@@ -244,9 +307,13 @@ def import_sqlite(database, output, parser='android-sms', provenance=None):
                     source.execute('PRAGMA trusted_schema=OFF')
                     source.execute('PRAGMA query_only=ON')
                     source.set_progress_handler(lambda: int(time.monotonic() > deadline), 1000)
+                    page_size = source.execute('PRAGMA page_size').fetchone()[0]
+                    page_count = source.execute('PRAGMA page_count').fetchone()[0]
+                    if page_count * page_size > MAX_FILE_BYTES:
+                        raise ValueError('Recovered database exceeds the 64 MiB output limit.')
 
                     def progress(status, remaining, total):
-                        if time.monotonic() > deadline or total > MAX_FILE_BYTES // 512:
+                        if time.monotonic() > deadline or total * page_size > MAX_FILE_BYTES:
                             raise ValueError('SQLite recovery exceeded time/page limits.')
 
                     source.backup(target, pages=256, progress=progress, sleep=0.01)
@@ -275,33 +342,66 @@ def import_sqlite(database, output, parser='android-sms', provenance=None):
     return {**report, 'directory': str(output)}
 
 
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('Duplicate JSON key in evidence manifest: ' + str(key))
+        result[key] = value
+    return result
+
+
+def _manifest(directory):
+    raw = _read_bytes(directory / 'manifest.json', 1024 * 1024)
+    manifest = json.loads(raw, object_pairs_hook=_unique_object)
+    if not isinstance(manifest, dict):
+        raise ValueError('Unsupported evidence manifest.')
+    files = manifest.get('files')
+    if manifest.get('format') != 'witnessforge.external.manifest.v1' or manifest.get('algorithm') != 'sha256' or not isinstance(files, dict):
+        raise ValueError('Unsupported evidence manifest.')
+    if not {'evidence.json', 'originals/evidence.sqlite'} <= set(files):
+        raise ValueError('Manifest omits mandatory evidence files.')
+    if not set(files) <= EVIDENCE_FILES:
+        raise ValueError('Unsafe or unsupported manifest path.')
+    if any(not isinstance(value, str) or not re.fullmatch('[0-9a-f]{64}', value) for value in files.values()):
+        raise ValueError('Manifest hashes must be lowercase SHA-256 hex strings.')
+    return raw, files
+
+
+def _inventory(root):
+    """Bound directory traversal to the fixed external-evidence layout."""
+    actual = set()
+    for entry in root.iterdir():
+        mode = entry.lstat().st_mode
+        if stat.S_ISDIR(mode) and entry.name in ('originals', 'derived'):
+            for child in entry.iterdir():
+                name = child.relative_to(root).as_posix()
+                if name not in EVIDENCE_FILES or not stat.S_ISREG(child.lstat().st_mode):
+                    raise ValueError('Unlisted or unsafe bundle entry: ' + name)
+                actual.add(name)
+        elif stat.S_ISREG(mode) and entry.name in ('manifest.json', 'evidence.json'):
+            if entry.name != 'manifest.json':
+                actual.add(entry.name)
+        else:
+            raise ValueError('Unlisted or unsafe bundle entry: ' + entry.name)
+    return actual
+
+
 def verify_evidence(directory):
     root = Path(directory).resolve()
     errors = []
     checked = 0
     try:
-        manifest_path = root / 'manifest.json'
-        if manifest_path.is_symlink() or manifest_path.stat().st_size > 1024 * 1024:
-            raise ValueError('Invalid manifest file.')
-        manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-        files = manifest.get('files')
-        if manifest.get('format') != 'witnessforge.external.manifest.v1' or manifest.get('algorithm') != 'sha256' or not isinstance(files, dict):
-            raise ValueError('Unsupported evidence manifest.')
-        if not {'evidence.json', 'originals/evidence.sqlite'} <= set(files):
-            raise ValueError('Manifest omits mandatory evidence files.')
+        _, files = _manifest(root)
+        if _inventory(root) != set(files):
+            raise ValueError('Bundle contains unlisted or missing files.')
         for name, expected in files.items():
-            relative = Path(name)
-            if not isinstance(name, str) or relative.is_absolute() or '..' in relative.parts or '\\' in name or ':' in name:
-                raise ValueError('Unsafe manifest path.')
-            path = root / relative
+            path = root / name
             if path.is_symlink() or not path.resolve().is_relative_to(root) or not path.is_file():
                 errors.append('Missing or unsafe file: ' + name)
             elif _digest(path) != expected:
                 errors.append('Hash mismatch: ' + name)
             checked += 1
-        actual = {path.relative_to(root).as_posix() for path in root.rglob('*') if path.is_file() and path != manifest_path}
-        if actual != set(files):
-            errors.append('Bundle contains unlisted or missing files.')
     except (OSError, ValueError, TypeError, AttributeError) as exc:
         errors.append(str(exc))
     return {'status': 'PASS' if not errors else 'FAIL', 'checked_files': checked, 'errors': errors,
@@ -310,13 +410,33 @@ def verify_evidence(directory):
 
 def bundle_evidence(directory, output):
     directory, output = Path(directory).resolve(), Path(output).resolve()
-    result = verify_evidence(directory)
-    if result['status'] != 'PASS':
-        raise ValueError('Cannot bundle evidence with failed integrity verification.')
     if output.exists() or output.is_relative_to(directory):
         raise ValueError('ZIP output must be new and outside the evidence directory.')
-    with zipfile.ZipFile(output, 'x', compression=zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted(directory.rglob('*')):
-            if path.is_file():
-                archive.write(path, path.relative_to(directory).as_posix())
-    return {'status': 'BUNDLED', 'path': str(output), 'sha256': _digest(output)}
+    manifest_bytes, files = _manifest(directory)
+    if _inventory(directory) != set(files):
+        raise ValueError('Cannot bundle evidence with unlisted or missing files.')
+    # Pin exactly the bytes that are hashed and added to ZIP. A source mutation
+    # between a preliminary verify and a later read must never yield a bad bundle.
+    # Publish by exclusive creation only after every member has passed its hash.
+    with tempfile.TemporaryFile() as pending:
+        with zipfile.ZipFile(pending, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+            for name, expected in sorted(files.items()):
+                path = directory / name
+                if not path.resolve().is_relative_to(directory):
+                    raise ValueError('Unsafe evidence path during bundling.')
+                content = _read_bytes(path, MAX_FILE_BYTES)
+                if hashlib.sha256(content).hexdigest() != expected:
+                    raise ValueError('Evidence changed or failed integrity verification: ' + name)
+                archive.writestr(name, content)
+            archive.writestr('manifest.json', manifest_bytes)
+        if _inventory(directory) != set(files) or _read_bytes(directory / 'manifest.json', 1024 * 1024) != manifest_bytes:
+            raise ValueError('Bundle inventory or manifest changed during export.')
+        if pending.tell() > MAX_BUNDLE_BYTES:
+            raise ValueError('ZIP exceeds the bounded evidence size.')
+        pending.seek(0)
+        try:
+            with output.open('xb') as target:
+                shutil.copyfileobj(pending, target)
+        except FileExistsError:
+            raise ValueError('ZIP output already exists; it was not overwritten.') from None
+    return {'status': 'BUNDLED', 'path': str(output), 'sha256': _digest(output, MAX_BUNDLE_BYTES)}

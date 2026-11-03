@@ -85,18 +85,21 @@ def adb_status(adb=None):
 
 
 def _authorization(allowlist, package, database, serial, stop_app):
-    if not isinstance(package, str) or not PACKAGE.fullmatch(package):
+    if not isinstance(package, str) or len(package) > 255 or not PACKAGE.fullmatch(package):
         raise ValueError('Invalid Android package name.')
     if not isinstance(database, str) or not DATABASE.fullmatch(database) or database.split('/')[-1] in ('.', '..'):
         raise ValueError('Database must be one safe file immediately inside databases/.')
     if not isinstance(serial, str) or not SERIAL.fullmatch(serial):
         raise ValueError('An explicit safe device serial is required.')
-    if not stop_app:
+    if stop_app is not True:
         raise ValueError('Acquisition requires --stop-app: it force-stops only the allowlisted app and leaves it stopped.')
     path = Path(allowlist)
     if path.stat().st_size > 65536:
         raise ValueError('Allowlist exceeds 64 KiB.')
-    raw = path.read_bytes()
+    with path.open('rb') as stream:
+        raw = stream.read(65537)
+    if len(raw) > 65536:
+        raise ValueError('Allowlist grew beyond 64 KiB.')
     document = json.loads(raw.decode('utf-8-sig'))
     packages = document.get('packages') if isinstance(document, dict) else None
     if not isinstance(document, dict) or document.get('format') != 'witnessforge.adb.allowlist.v1' or not isinstance(packages, dict):
@@ -108,6 +111,8 @@ def _authorization(allowlist, package, database, serial, stop_app):
 
 
 def acquire_sqlite(serial, package, database, allowlist, output, *, stop_app=False, adb=None, parser='android-sms'):
+    if parser not in ('android-sms', 'sqlite-only'):
+        raise ValueError('Parser must be android-sms or sqlite-only.')
     allowlist_hash = _authorization(allowlist, package, database, serial, stop_app)
     if Path(output).exists():
         raise ValueError('Output must be a new directory.')
@@ -129,7 +134,8 @@ def acquire_sqlite(serial, package, database, allowlist, output, *, stop_app=Fal
     if call(['get-state']).strip() != b'device':
         raise ValueError('Selected ADB device is not ready.')
     identity = call(['shell', '-T', 'run-as', package, 'id']).decode('utf-8', 'replace').strip()
-    if not identity.startswith('uid='):
+    identity_match = re.match(r'uid=(\d+)(?:\(|\s)', identity)
+    if not identity_match or int(identity_match.group(1)) < 10000:
         raise ValueError('run-as did not establish the selected app identity.')
     fingerprint = call(['shell', 'getprop', 'ro.build.fingerprint']).decode('utf-8', 'replace').strip()
     sdk = call(['shell', 'getprop', 'ro.build.version.sdk']).decode('utf-8', 'replace').strip()

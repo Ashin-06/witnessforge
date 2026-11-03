@@ -14,7 +14,12 @@
   function askKey() {
     if (!asking) {
       asking = new Promise((resolve) => setTimeout(() => {
-        const entered = window.prompt("This workbench needs an API key. Paste the key you were given:");
+        let entered = null;
+        try {
+          entered = window.prompt("This workbench needs an API key. Paste the key you were given:");
+        } catch {
+          // Some embedded browsers block dialogs; the page then shows the server's "API key required" error.
+        }
         if (entered && entered.trim()) remember(entered.trim());
         resolve(key());
         setTimeout(() => { asking = null; }, 1000);

@@ -1,7 +1,8 @@
 # Threat model
 
 What the workbench service protects, from whom, and what is still open. Written for the 1.1.0 code;
-nobody independent has reviewed it. The lab's own research scope is in [SECURITY_SCOPE.md](../SECURITY_SCOPE.md).
+nobody independent has reviewed it. The lab's own research scope is in
+[README: Local operation and evidence boundaries](../README.md#local-operation-and-evidence-boundaries).
 
 ## What it protects
 

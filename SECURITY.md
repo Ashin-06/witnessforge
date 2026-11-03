@@ -28,6 +28,6 @@ makes a bundle verify when it was altered is in scope.
 Out of scope: the deliberately seeded parser defect (it is the demonstration), and findings that
 need an already-compromised host or a leaked API key.
 
-What the lab itself does and does not claim to test is in [SECURITY_SCOPE.md](SECURITY_SCOPE.md).
+What the lab itself does and does not claim to test is in [README: Local operation and evidence boundaries](README.md#local-operation-and-evidence-boundaries).
 
 This project has **not** had an independent security review or penetration test.

@@ -9,23 +9,33 @@
   const key = () => { try { return sessionStorage.getItem(STORE) || ""; } catch { return ""; } };
   const remember = (k) => { try { sessionStorage.setItem(STORE, k); } catch { /* storage blocked */ } };
 
+  // The page loads several things at once: every 401 shares one prompt, then all retry with the key.
+  let asking = null;
+  function askKey() {
+    if (!asking) {
+      asking = new Promise((resolve) => setTimeout(() => {
+        const entered = window.prompt("This workbench needs an API key. Paste the key you were given:");
+        if (entered && entered.trim()) remember(entered.trim());
+        resolve(key());
+        setTimeout(() => { asking = null; }, 1000);
+      }, 0));
+    }
+    return asking;
+  }
+
   async function keyed(input, init = {}) {
     const url = typeof input === "string" ? input : input.url;
     if (!sameOrigin(url)) return plainFetch(input, init);
-    const send = () => {
+    const send = (k) => {
       const headers = new Headers(init.headers || {});
-      if (key()) headers.set("X-API-Key", key());
+      if (k) headers.set("X-API-Key", k);
       return plainFetch(input, { ...init, headers });
     };
-    let response = await send();
-    if (response.status === 401) {
-      const entered = window.prompt("This workbench needs an API key. Paste the key you were given:");
-      if (entered && entered.trim()) {
-        remember(entered.trim());
-        response = await send();
-      }
-    }
-    return response;
+    const sent = key();
+    const response = await send(sent);
+    if (response.status !== 401) return response;
+    const now = key() !== sent ? key() : await askKey();  // another request may already have the key
+    return now && now !== sent ? send(now) : response;
   }
   window.fetch = keyed;
 

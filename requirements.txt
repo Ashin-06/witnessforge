@@ -1,0 +1,2 @@
+# No runtime dependencies: the lab uses only the Python standard library.
+# Development tools are pinned in requirements-dev.lock.

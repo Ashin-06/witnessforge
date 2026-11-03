@@ -7,3 +7,7 @@ dist/
 cases/
 .test-output/
 evidence/
+.coverage
+coverage.xml
+.ruff_cache/
+probe-output/
